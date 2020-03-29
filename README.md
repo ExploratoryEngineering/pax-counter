@@ -2,7 +2,7 @@
 
 This device scans for visible bluetooth and wifi devices and then transmits the device count over NBIoT to a backend server.
 
-Tested on ESP-WROOM-32D
+Tested on a ESP-WROOM-32D + [EE-NBIoT-01](https://github.com/ExploratoryEngineering/ee-nbiot-01) rat's nest ;)
 
 ## Wiring (ESP):
 * VCC   3.3V
