@@ -616,7 +616,6 @@ uint8_t TelenorNBIoT::readCommand(char **lines)
 
 void TelenorNBIoT::writeCommand(const char *cmd)
 {
-    uint8_t n = 0;
     drain();
     _errCode = -1;
 
@@ -678,3 +677,53 @@ bool retry(uint8_t attempts, nonstd::function<bool ()> fn, uint16_t delayBetween
     }
     return false;
 }
+
+TelenorNBIoT nbiot;
+IPAddress remoteIP(172, 16, 15, 14);
+int REMOTE_PORT = 1234;
+
+void nbiot_setup()
+{
+  Serial2.begin(9600);
+  while (!nbiot.begin(Serial2, true)) {
+    Serial.println("Begin failed. Retrying...");
+    delay(1000);
+  }
+
+  Serial.print("IMSI: ");
+  Serial.println(nbiot.imsi());
+  Serial.print("IMEI: ");
+  Serial.println(nbiot.imei());
+
+  while (!nbiot.createSocket()) {
+    Serial.print("Error creating socket. Error code: ");
+    Serial.println(nbiot.errorCode(), DEC);
+    delay(100);
+  }
+}
+
+
+char txBuf[64];
+
+void nbiot_transmit_message(int bt_devices, int wifi_devices)
+{
+    if (nbiot.isConnected()) 
+    {
+        sprintf(txBuf, "bt:%d,wifi:%d", bt_devices, wifi_devices);
+        if (true == nbiot.sendString(remoteIP, REMOTE_PORT, txBuf)) 
+        {
+            Serial.println("Successfully sent data");
+        } 
+        else 
+        {
+            Serial.println("Failed sending data");
+        }
+        delay(30000); // Grace period. Avoid getting booted off the network for misbehaving :)
+    } 
+    else 
+    {
+        Serial.println("Connecting...");
+        delay(5000);
+    }
+}
+
