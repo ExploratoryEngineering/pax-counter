@@ -13,4 +13,4 @@ Tested on ESP-WROOM-32D
 * TXD0    to FTDI RX
 
 1) Use common ground for ESP-WROOM-32D, EE-NBIoT-01 and FTDI.
-2) Leave FTDI VCC pin un connected
+2) Leave FTDI VCC pin unconnected
