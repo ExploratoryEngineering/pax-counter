@@ -1,4 +1,4 @@
-#PAX Counter
+# PAX Counter
 
 Tested on ESP-WROOM-32D
 
