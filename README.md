@@ -1,5 +1,7 @@
 # PAX Counter
 
+This device scans for visible bluetooth and wifi devices and then transmits the device count over NBIoT to a backend server.
+
 Tested on ESP-WROOM-32D
 
 ## Wiring (ESP):
@@ -14,3 +16,6 @@ Tested on ESP-WROOM-32D
 
 1) Use common ground for ESP-WROOM-32D, EE-NBIoT-01 and FTDI.
 2) Leave FTDI VCC pin unconnected
+
+
+![Prototype](https://github.com/ExploratoryEngineering/pax-counter/raw/master/images/prototype.jpg)
