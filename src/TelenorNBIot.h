@@ -27,6 +27,9 @@
 // Maximum number of lines.
 #define MAXLINES 5
 
+void nbiot_setup();
+void nbiot_transmit_message(int bt_devices, int wifi_devices);
+
 /**
  * User-friendly interface to the SARA N2 module from ublox
  */
