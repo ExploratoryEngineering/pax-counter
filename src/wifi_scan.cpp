@@ -5,15 +5,11 @@
 #include <string>
 
 #include "esp_wifi.h"
+#include "mac_pool.h"
+
+extern MACAddressPool pool;
 
 const wifi_promiscuous_filter_t filt= { .filter_mask=WIFI_PROMIS_FILTER_MASK_MGMT | WIFI_PROMIS_FILTER_MASK_DATA };
-
-std::vector<std::string> mac_addresses;
-
-typedef struct 
-{ 
-  uint8_t mac[6];
-} __attribute__((packed)) MacAddr;
 
 typedef struct {
     unsigned frame_ctrl:16;
@@ -52,11 +48,7 @@ void promiscuous_callback(void* buffer, wifi_promiscuous_pkt_type_t type)
         header->sender_address[5]
         );
 
-    std::string address = std::string(tmp);
-    if (std::find(mac_addresses.begin(), mac_addresses.end(),address)==mac_addresses.end())
-    {
-        mac_addresses.push_back(address);
-    }
+    pool.Add(MACSighting(WIFI, std::string(tmp)));
 }
 
 void wifi_scanner_setup() 
@@ -71,17 +63,7 @@ void wifi_scanner_setup()
   esp_wifi_set_promiscuous_rx_cb(&promiscuous_callback);
 }
 
-void print_mac_addresses()
-{ 
-    if (mac_addresses.size() != 0)
-        Serial.println("-----------------");
-    for (size_t i=0; i<mac_addresses.size(); i++)
-    {
-        Serial.println(mac_addresses[i].c_str());
-    }
-}
-
-int wifi_scan() 
+void wifi_scan() 
 {
     Serial.println("Scanning wifi...");
 
@@ -89,8 +71,5 @@ int wifi_scan()
     {
         esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
         delay(2000);
-        print_mac_addresses();
     }
-
-    return mac_addresses.size();
 }

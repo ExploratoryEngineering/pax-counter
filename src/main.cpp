@@ -3,6 +3,9 @@
 #include "TelenorNBIot.h"
 #include "wifi_scan.h"
 #include "ble_scan.h"
+#include "mac_pool.h"
+
+MACAddressPool pool(300000); // Age limit: 5 minutes
 
 void setup() 
 {
@@ -14,8 +17,12 @@ void setup()
 
 void loop() 
 {
-    int wifi_count = wifi_scan();
-    int bt_count = ble_scan();
-
-    nbiot_transmit_message(bt_count, wifi_count);
+  while (true)
+  {
+    wifi_scan();
+    ble_scan();
+    nbiot_transmit_message(pool.get_count(BT), pool.get_count(WIFI));
+    pool.Purge();
+    pool.Log();
+  }
 }

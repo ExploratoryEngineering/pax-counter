@@ -5,7 +5,9 @@
 #include <BLEAdvertisedDevice.h>
 
 #include "ble_scan.h"
+#include "mac_pool.h"
 
+extern MACAddressPool pool;
 BLEScan* pBLEScan;
 int scanTime = 5; //In seconds
 
@@ -13,7 +15,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks
 {
     void onResult(BLEAdvertisedDevice advertisedDevice) 
     {
-      Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
+        pool.Add(MACSighting(BT, advertisedDevice.getAddress().toString().c_str()));
     }
 };
 
@@ -27,14 +29,11 @@ void ble_scanner_setup()
     pBLEScan->setWindow(99);  // less or equal setInterval value
 }
 
-int ble_scan()
+void ble_scan()
 {
-    int ble_device_count;
+    Serial.println("Scanning bluetooth...");
+
     BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
-    Serial.print("BLE Devices found: ");
-    ble_device_count = foundDevices.getCount();
-    Serial.println(ble_device_count);
     pBLEScan->clearResults();
     delay(2000);
-    return ble_device_count;
 }
